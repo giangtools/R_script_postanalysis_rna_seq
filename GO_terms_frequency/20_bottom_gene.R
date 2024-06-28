@@ -7,7 +7,7 @@ df <- read_tsv(file_path)
 
 file_path_ns <- "D:/R/Script/GO_terms_frequency/go_term_counts_namespace_filtered_1.tsv"
 df_ns <- read_tsv(file_path_ns)
-
+print(df_ns)
 # Chuyển đổi cột GO_terms từ chuỗi ký tự thành danh sách
 df <- df %>%
   mutate(GO_terms = map(GO_terms, ~str_remove_all(., "[\\[\\]' ]") %>% str_split(",") %>% unlist))

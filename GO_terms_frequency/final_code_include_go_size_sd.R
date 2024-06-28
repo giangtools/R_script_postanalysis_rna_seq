@@ -2,6 +2,9 @@
 library(tidyverse)
 library(dplyr)
 # Đọc dữ liệu từ file TSV
+file_path_ns <- "go_term_counts_namespace_name.tsv"
+df_ns <- read_tsv(file_path_ns)
+print(df_ns)
 file_path <- "C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Res/go_terms_python_merged/salmon_results_with_go_terms.tsv"
 df <- read_tsv(file_path)
 
@@ -43,6 +46,7 @@ go_freq <- df %>%
   group_by(GO_terms) %>%
   summarise(freq = n())
 print(go_freq)
+write_tsv(go_freq, "D:/R/Script/GO_terms_frequency/go_freq.tsv")
 
 go_freq_gene <- df %>%
   unnest(GO_terms) %>%
@@ -50,8 +54,26 @@ go_freq_gene <- df %>%
   group_by(GO_terms) %>%
   summarise(freq = n(), genes = list(unique(gene_id))) %>%
   mutate(genes = map_chr(genes, ~paste(., collapse = ",")))
-
 print(go_freq_gene)
+##########################################
+# Tạo một dataframe mới chứa thông tin gene_id và product từ df
+gene_product_df <- df %>%
+  select(gene_id, product)
+
+# Tạo cột mới trong go_freq_gene chứa "genes:product"
+go_freq_gene <- go_freq_gene %>%
+  mutate(genes_products = map_chr(genes, function(gene_list) {
+    gene_ids <- unlist(str_split(gene_list, ","))
+    products <- gene_product_df %>%
+      filter(gene_id %in% gene_ids) %>%
+      pull(product)
+    paste(paste(gene_ids, products, sep = ":"), collapse = ",")
+  }))
+
+# Hiển thị dataframe go_freq_gene sau khi thêm cột mới
+print(go_freq_gene)
+write_csv(go_freq_gene,"C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Test/go_freq_gene.csv")
+##########################################
 
 # Tính trung bình và độ lệch chuẩn của các giá trị gene cho mỗi GO_terms
 go_stats <- df %>%
@@ -85,8 +107,18 @@ print(top_20_freq)
 top_20_go_terms <- combined_df %>%
   group_by(namespace) %>%
   arrange(namespace, desc(size)) %>%
-  slice_head(n = 20) %>%
+  slice_head(n = 10) %>%
   ungroup()
+######
+top_20_go_terms <- combined_df %>%
+  filter(!is.na(namespace)) %>%
+  group_by(namespace) %>%
+  arrange(namespace, desc(size)) %>%
+  slice_max(size, n = 20) %>%
+  ungroup()
+
+print(top_20_go_terms)
+######
 ggplot(top_20_go_terms, aes(x = reorder(name, -size), y = size, fill = namespace)) +
   geom_bar(stat = "identity", position = "dodge") +
   geom_errorbar(aes(ymin = size - sd, ymax = size + sd), width = 0.2, position = position_dodge(0.9)) +
@@ -112,7 +144,15 @@ bottom_20_go_terms <- combined_df %>%
   arrange(namespace, size) %>%
   slice_head(n = 20) %>%
   ungroup()
-
+#####
+bottom_20_go_terms <- combined_df %>%
+  group_by(namespace) %>%
+  arrange(namespace, size) %>%
+  slice_head(n = 20) %>%
+  ungroup() %>%
+  filter(!is.na(namespace)) %>%  # Loại bỏ các dòng có giá trị NA trong namespace
+  mutate(name = ifelse(nchar(name) > 30, paste0(substr(name, 1, 27), "..."), name))
+#####
 # Giới hạn chiều dài của các tên để dễ hiển thị trên trục x
 bottom_20_go_terms <- bottom_20_go_terms %>%
   mutate(name = ifelse(nchar(name) > 30, paste0(substr(name, 1, 27), "..."), name))
@@ -140,4 +180,3 @@ go_freq_gene_name <- go_freq_gene %>%
   left_join(select(combined_df, GO_terms, namespace, name, genes), by = "GO_terms")
 print(go_freq_gene_name)
 write_csv(go_freq_gene_name,"C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Test/go_freq_gene_name.csv")
-
