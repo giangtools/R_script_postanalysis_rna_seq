@@ -2,9 +2,7 @@
 library(tidyverse)
 library(dplyr)
 # Đọc dữ liệu từ file TSV
-file_path_ns <- "go_term_counts_namespace_name.tsv"
-df_ns <- read_tsv(file_path_ns)
-print(df_ns)
+
 file_path <- "C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Res/go_terms_python_merged/salmon_results_with_go_terms.tsv"
 df <- read_tsv(file_path)
 
@@ -47,6 +45,10 @@ go_freq <- df %>%
   summarise(freq = n())
 print(go_freq)
 write_tsv(go_freq, "D:/R/Script/GO_terms_frequency/go_freq.tsv")
+#Chạy thêm Đoạn code filter.py
+file_path_ns <- "go_term_counts_namespace_name.tsv"
+df_ns <- read_tsv(file_path_ns)
+print(df_ns)
 
 go_freq_gene <- df %>%
   unnest(GO_terms) %>%
@@ -92,9 +94,9 @@ print(go_data)
 # Kết hợp với dữ liệu namespace
 combined_df <- go_data %>%
   inner_join(df_ns, by = "GO_terms")
-
+##Lưu ý bổ sunng 
 combined_df <- combined_df %>%
-  inner_join(go_freq_gene %>% select(GO_terms, genes), by = "GO_terms")
+  inner_join(go_freq_gene %>% select(GO_terms, genes, genes_products), by = "GO_terms")
 print(combined_df)
 
 # Lọc ra 20 go_term có tầng số cao nhất
@@ -133,7 +135,7 @@ ggplot(top_20_go_terms, aes(x = reorder(name, -size), y = size, fill = namespace
 
 
 top_20_go_terms <- top_20_go_terms %>%
-  left_join(select(combined_df, GO_terms, genes), by = "GO_terms")
+  left_join(select(combined_df, GO_terms, genes, gene), by = "GO_terms")
 print(top_20_go_terms)
 write_csv(top_20_go_terms,"C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Test/top_20_go_terms.csv")
 

@@ -45,7 +45,7 @@ GO:0002939	biological_process	1	tRNA N1-guanine methylation
 GO:0002949	biological_process	2	tRNA threonylcarbamoyladenosine modification
 GO:0003333	biological_process	2	amino acid transmembrane transport
 GO:0003676	molecular_function	27	nucleic acid binding
-GO:0003677	molecular_function	66	DNA binding
+GO:0003677	molecular_function	67	DNA binding
 GO:0003678	molecular_function	6	DNA helicase activity
 GO:0003684	molecular_function	2	damaged DNA binding
 GO:0003688	molecular_function	1	DNA replication origin binding
@@ -277,7 +277,7 @@ GO:0005622	cellular_component	3	intracellular anatomical structure
 GO:0005634	cellular_component	3	nucleus
 GO:0005694	cellular_component	3	chromosome
 GO:0005730	cellular_component	1	nucleolus
-GO:0005737	cellular_component	101	cytoplasm
+GO:0005737	cellular_component	102	cytoplasm
 GO:0005739	cellular_component	3	mitochondrion
 GO:0005789	cellular_component	1	endoplasmic reticulum membrane
 GO:0005829	cellular_component	154	cytosol
@@ -467,8 +467,8 @@ GO:0008113	molecular_function	1	peptide-methionine (S)-S-oxide reductase activit
 GO:0008134	molecular_function	1	transcription factor binding
 GO:0008137	molecular_function	7	NADH dehydrogenase (ubiquinone) activity
 GO:0008146	molecular_function	1	sulfotransferase activity
-GO:0008168	molecular_function	21	methyltransferase activity
-GO:0008170	molecular_function	16	N-methyltransferase activity
+GO:0008168	molecular_function	22	methyltransferase activity
+GO:0008170	molecular_function	17	N-methyltransferase activity
 GO:0008173	molecular_function	2	RNA methyltransferase activity
 GO:0008176	molecular_function	1	tRNA (guanine(46)-N7)-methyltransferase activity
 GO:0008186	molecular_function	1	ATP-dependent activity, acting on RNA
