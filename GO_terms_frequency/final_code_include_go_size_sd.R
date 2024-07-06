@@ -182,3 +182,37 @@ go_freq_gene_name <- go_freq_gene %>%
   left_join(select(combined_df, GO_terms, namespace, name, genes), by = "GO_terms")
 print(go_freq_gene_name)
 write_csv(go_freq_gene_name,"C:/Users/ADMIN/TGiang/GD_63_Postanalysis/Test/go_freq_gene_name.csv")
+
+
+
+library(patchwork)
+
+# Vẽ biểu đồ top_20_go_terms
+p1 <- ggplot(top_20_go_terms, aes(x = reorder(name, -size), y = size, fill = namespace)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = size - sd, ymax = size + sd), width = 0.2, position = position_dodge(0.9)) +
+  facet_wrap(~ namespace, scales = "free_x") +
+  geom_text(aes(label = freq.x), vjust = -0.5, position = position_dodge(0.9), size = 3) +
+  theme_minimal() +
+  labs(title = "Top 20 GO Terms by Size in Each Namespace",
+       x = "GO Terms",
+       y = "Size",
+       fill = "Namespace") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Vẽ biểu đồ bottom_20_go_terms
+p2 <- ggplot(bottom_20_go_terms, aes(x = reorder(name, -size), y = size, fill = namespace)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_errorbar(aes(ymin = size - sd, ymax = size + sd), width = 0.2, position = position_dodge(0.9)) +
+  facet_wrap(~ namespace, scales = "free_x") +
+  geom_text(aes(label = freq.x), vjust = -0.5, position = position_dodge(0.9), size = 3) +
+  theme_minimal() +
+  labs(title = "Bottom 20 GO Terms by Size in Each Namespace",
+       x = "GO Terms",
+       y = "Size",
+       fill = "Namespace") +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+
+# Hiển thị hai biểu đồ cùng nhau với cùng tỉ lệ scale
+p1 + p2 + plot_layout(ncol = 2)
+
